@@ -1,0 +1,6 @@
+{
+  "name": "Purchasing Match - Kids Money Math Arcade Game",
+  "description": "An interactive money matching and smart purchasing challenge game for kids featuring interactive Voice Hosts (Sparky, Maya, Penny, Leo), real-time scoring, sound effects, and Indian Rupee (INR) currency support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
