@@ -102,7 +102,7 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
     }
   }, [isMuted]);
 
-  // Voice Host speech synthesis engine
+  // Voice Host speech synthesis engine with Indian English & natural voice auto-selection
   const triggerHostSpeech = (textToSpeak: string, personaId: HostPersonaId = selectedPersona) => {
     if (isMuted || typeof window === 'undefined') return;
 
@@ -114,6 +114,15 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
       const utterance = new SpeechSynthesisUtterance(cleanSpeech);
       utterance.pitch = persona.voicePitch;
       utterance.rate = persona.voiceRate;
+
+      // Select natural voice (Indian English or clearest English voice if available)
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        const indianVoice = voices.find(v => v.lang === 'en-IN' || v.lang.startsWith('hi') || v.name.toLowerCase().includes('india'));
+        const friendlyVoice = voices.find(v => v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny'));
+        const fallbackEnglish = voices.find(v => v.lang.startsWith('en'));
+        utterance.voice = indianVoice || friendlyVoice || fallbackEnglish || voices[0];
+      }
 
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
@@ -403,19 +412,19 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
   }
 
   return (
-    <div className="w-full max-w-md md:max-w-lg mx-auto bg-[#0b0e2b] text-white rounded-[32px] p-4 sm:p-6 shadow-2xl border border-indigo-800/80 relative overflow-hidden flex flex-col items-center">
-      {/* Background Subtle Gradient Glow */}
-      <div className="absolute -top-24 -left-24 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
+    <div className="w-full max-w-md md:max-w-lg mx-auto bg-white/95 text-slate-900 rounded-[32px] p-4 sm:p-6 shadow-xl border-2 border-amber-200/90 relative overflow-hidden flex flex-col items-center">
+      {/* Background Soft Glow Accents */}
+      <div className="absolute -top-24 -left-24 w-64 h-64 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-orange-400/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Header Bar with Level, Timer, Streak, and Controls */}
-      <div className="w-full flex items-center justify-between gap-2 mb-3 pb-3 border-b border-indigo-900/80 relative z-10">
+      <div className="w-full flex items-center justify-between gap-2 mb-3.5 pb-3 border-b border-amber-200/80 relative z-10">
         {/* Round Badge */}
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono font-bold text-xs rounded-xl shadow-xs">
+          <span className="px-3 py-1 bg-amber-100 border border-amber-300 text-amber-950 font-mono font-bold text-xs rounded-xl shadow-xs">
             Round {roundIndex + 1}/{maxRounds}
           </span>
-          <span className="px-2.5 py-1 bg-indigo-950 border border-indigo-700/60 text-indigo-300 font-mono text-xs rounded-xl">
+          <span className="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-900 font-mono font-bold text-xs rounded-xl">
             ⏱️ {formatTimer(timeRemainingSeconds)}
           </span>
         </div>
@@ -429,10 +438,10 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
               soundManager.playClick();
               setIsMuted(!isMuted);
             }}
-            className="w-8 h-8 rounded-xl bg-indigo-950/80 border border-indigo-700/60 flex items-center justify-center text-indigo-300 hover:text-white transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer shadow-xs"
             title={isMuted ? 'Unmute Game' : 'Mute Game'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-rose-500" /> : <Volume2 className="w-4 h-4 text-amber-700" />}
           </button>
 
           <button
@@ -442,20 +451,20 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
               soundManager.playClick();
               setIsPaused(!isPaused);
             }}
-            className="w-8 h-8 rounded-xl bg-indigo-950/80 border border-indigo-700/60 flex items-center justify-center text-indigo-300 hover:text-white transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer shadow-xs"
             title={isPaused ? 'Resume Game' : 'Pause Game'}
           >
-            {isPaused ? <Play className="w-4 h-4 text-emerald-400" /> : <Pause className="w-4 h-4 text-indigo-300" />}
+            {isPaused ? <Play className="w-4 h-4 text-emerald-600" /> : <Pause className="w-4 h-4 text-amber-700" />}
           </button>
 
           <button
             type="button"
             id="btn-restart-game"
             onClick={handleRestart}
-            className="w-8 h-8 rounded-xl bg-indigo-950/80 border border-indigo-700/60 flex items-center justify-center text-indigo-300 hover:text-white transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer shadow-xs"
             title="Restart Match"
           >
-            <RotateCcw className="w-4 h-4 text-indigo-300" />
+            <RotateCcw className="w-4 h-4 text-amber-700" />
           </button>
         </div>
       </div>
@@ -474,40 +483,58 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
       {/* Main Purchasing Challenge Card */}
       <div className="w-full flex flex-col items-center relative z-10">
         {/* Scenario Category Pill */}
-        <div className="mb-2.5 px-3.5 py-1 rounded-full bg-indigo-900/60 border border-indigo-700/70 text-indigo-200 text-xs font-bold tracking-wide flex items-center gap-1.5 shadow-sm">
+        <div className="mb-2 px-3.5 py-1 rounded-full bg-amber-100/80 border border-amber-300 text-amber-950 text-xs font-bold tracking-wide flex items-center gap-1.5 shadow-xs">
           <span>{currentChallenge.categoryBadge}</span>
         </div>
 
-        {/* Item Showcase Card */}
+        {/* Item Showcase Card with Large Apple & Item Display */}
         <motion.div
           key={currentChallenge.id}
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.2 }}
-          className="w-full bg-[#12163d]/90 rounded-2xl p-3.5 sm:p-4 border border-indigo-700/60 shadow-lg flex flex-col items-center mb-3.5"
+          transition={{ duration: 0.25 }}
+          className="w-full bg-gradient-to-b from-amber-50/90 via-orange-50/40 to-white rounded-3xl p-4 sm:p-5 border-2 border-amber-200/90 shadow-md flex flex-col items-center mb-3.5 relative"
         >
-          {/* Animated Item Emoji Avatar */}
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-amber-400/20 to-indigo-500/20 border border-amber-400/40 flex items-center justify-center text-3xl mb-2 shadow-inner">
-            <span>{currentChallenge.itemEmoji}</span>
-          </div>
+          {/* Audio repeat button on top-right */}
+          <button
+            type="button"
+            id="btn-repeat-question-voice"
+            onClick={() => {
+              soundManager.playClick();
+              triggerHostSpeech(`${currentChallenge.itemName}. ${currentChallenge.questionText}`);
+            }}
+            className="absolute top-3.5 right-3.5 p-2 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+            title="Listen to question aloud"
+          >
+            <Volume2 className="w-4 h-4 text-amber-700" />
+            <span className="text-[11px] font-bold">Awaaz</span>
+          </button>
+
+          {/* LARGE EXPANDED ITEM EMOJI AVATAR (Apple thoda bada) */}
+          <motion.div
+            whileHover={{ scale: 1.08, rotate: [0, -3, 3, 0] }}
+            className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-tr from-amber-200 via-orange-100 to-amber-50 border-3 border-amber-300/90 flex items-center justify-center text-6xl sm:text-7xl mb-2.5 shadow-md shadow-amber-200/50"
+          >
+            <span className="select-none filter drop-shadow-md">{currentChallenge.itemEmoji}</span>
+          </motion.div>
 
           {/* Item Name & Base Price */}
-          <h2 className="text-base sm:text-lg font-black text-white text-center leading-tight mb-1">
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 text-center leading-tight mb-1">
             {currentChallenge.itemName}
           </h2>
-          <div className="text-xs text-amber-300 font-mono font-bold bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-400/30 mb-2.5">
-            Base Unit: {formatMoney(currentChallenge.basePrice, currency)}
+          <div className="text-xs text-amber-950 font-mono font-black bg-amber-200/80 px-3 py-1 rounded-full border border-amber-300 mb-3 shadow-xs">
+            1 Item = {formatMoney(currentChallenge.basePrice, currency)}
           </div>
 
           {/* Clear Purchasing Question Text */}
-          <div className="w-full bg-[#080a21] rounded-xl p-3 border border-indigo-900 text-center relative group">
-            <p className="text-xs sm:text-sm md:text-base font-semibold text-slate-100 leading-relaxed">
+          <div className="w-full bg-white rounded-2xl p-3.5 border-2 border-amber-200/80 text-center shadow-xs">
+            <p className="text-sm sm:text-base font-bold text-slate-800 leading-relaxed">
               {currentChallenge.questionText}
             </p>
           </div>
 
           {/* Math Formula Hint Pill */}
-          <div className="mt-2.5 px-3 py-1 bg-indigo-950/80 rounded-xl border border-indigo-800 text-amber-300 text-xs font-mono font-bold">
+          <div className="mt-2.5 px-3.5 py-1 bg-amber-100/80 rounded-xl border border-amber-300 text-amber-950 text-xs font-mono font-bold shadow-xs">
             💡 {currentChallenge.formulaHint}
           </div>
         </motion.div>
@@ -519,41 +546,41 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              className={`w-full mb-3 p-2.5 rounded-xl text-xs font-bold flex items-center gap-2 border ${
+              className={`w-full mb-3 p-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border-2 shadow-xs ${
                 answerStatus === 'correct'
-                  ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/60'
-                  : 'bg-rose-950/80 text-rose-300 border-rose-500/60'
+                  ? 'bg-emerald-50 text-emerald-950 border-emerald-400'
+                  : 'bg-rose-50 text-rose-950 border-rose-400'
               }`}
             >
               {answerStatus === 'correct' ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               ) : (
-                <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
               )}
               <span>{feedbackText}</span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* 4 UNIFIED-COLOR ANSWER OPTION CARDS */}
+        {/* 4 UNIFIED-COLOR ANSWER OPTION CARDS (Matching Pay Item Interface) */}
         <div className="w-full grid grid-cols-2 gap-3">
           {currentChallenge.options.map((option, idx) => {
             const isSelected = selectedOption === option;
             const isCorrectAnswer = Math.abs(option - currentChallenge.correctAnswer) < 0.01;
 
             let cardStyles =
-              'bg-[#13173d] hover:bg-[#1a2052] text-white border-2 border-indigo-600/50 hover:border-amber-400/70 shadow-md';
+              'bg-white hover:bg-amber-50/80 text-slate-900 border-2 border-amber-200/90 hover:border-amber-400 shadow-sm hover:shadow-md';
 
             if (isSelected) {
               if (answerStatus === 'correct') {
                 cardStyles =
-                  'bg-emerald-600 border-2 border-emerald-300 text-white shadow-[0_0_20px_rgba(16,185,129,0.7)] scale-102';
+                  'bg-emerald-500 border-2 border-emerald-600 text-white shadow-lg shadow-emerald-500/30 scale-102';
               } else if (answerStatus === 'wrong') {
                 cardStyles =
-                  'bg-rose-600 border-2 border-rose-300 text-white shadow-[0_0_20px_rgba(244,63,94,0.7)] animate-shake';
+                  'bg-rose-500 border-2 border-rose-600 text-white shadow-lg shadow-rose-500/30 animate-shake';
               }
             } else if (answerStatus === 'correct' && isCorrectAnswer) {
-              cardStyles = 'bg-emerald-600/90 border-2 border-emerald-400 text-white';
+              cardStyles = 'bg-emerald-100 border-2 border-emerald-500 text-emerald-950 font-black';
             }
 
             return (
@@ -564,7 +591,8 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
                 disabled={answerStatus !== 'idle' || isPaused || !hasStarted}
                 onClick={() => handleSelectOption(option)}
                 onMouseEnter={() => soundManager.playHover()}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 className={`py-3.5 px-3 rounded-2xl font-mono font-black text-xl md:text-2xl transition-all duration-150 cursor-pointer flex items-center justify-center select-none ${cardStyles}`}
               >
                 <span>{formatMoney(option, currency)}</span>
@@ -582,25 +610,25 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-slate-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center"
+            className="absolute inset-0 bg-amber-50/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center"
           >
-            <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-orange-500 border border-amber-300 flex items-center justify-center text-3xl mb-4 shadow-[0_0_25px_rgba(251,191,36,0.6)] animate-bounce">
-              🛍️
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 to-orange-400 border-2 border-amber-300 flex items-center justify-center text-4xl mb-4 shadow-lg shadow-amber-300/60 animate-bounce">
+              🍎
             </div>
 
-            <h3 className="text-2xl font-black text-white tracking-wide mb-1">Purchasing Match</h3>
-            <p className="text-xs text-indigo-300/80 mb-6 max-w-xs leading-relaxed">
-              Test your smart shopping math skills with your Voice Host! Solve real store prices, discounts, combo deals, and cashier change.
+            <h3 className="text-2xl font-black text-slate-900 tracking-wide mb-1">Purchasing Match</h3>
+            <p className="text-xs sm:text-sm text-slate-700 mb-6 max-w-xs leading-relaxed font-medium">
+              Solve store math with your Voice Host! Calculate real prices, apple deals, discounts, and cashier change.
             </p>
 
             <button
               type="button"
               id="btn-start-purchasing-game"
               onClick={handleStartGame}
-              className="w-full max-w-xs py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-base uppercase tracking-wider shadow-[0_0_25px_rgba(251,191,36,0.8)] transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full max-w-xs py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black text-base uppercase tracking-wider shadow-lg shadow-amber-400/40 transition-all cursor-pointer flex items-center justify-center gap-2 border-2 border-amber-600"
             >
               <Play className="w-5 h-5 fill-slate-950 text-slate-950" />
-              <span>Start with Voice Host</span>
+              <span>Start Game (Awaaz Ke Saath)</span>
             </button>
           </motion.div>
         )}
@@ -613,20 +641,20 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center"
+            className="absolute inset-0 bg-amber-50/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center"
           >
-            <div className="w-14 h-14 rounded-2xl bg-indigo-900/90 border border-indigo-700 flex items-center justify-center text-indigo-300 mb-3 shadow-xl">
-              <Pause className="w-7 h-7 text-amber-400" />
+            <div className="w-14 h-14 rounded-2xl bg-amber-200 border-2 border-amber-400 flex items-center justify-center text-amber-900 mb-3 shadow-md">
+              <Pause className="w-7 h-7 text-amber-900" />
             </div>
 
-            <h3 className="text-xl font-black text-white mb-1">Game Paused</h3>
-            <p className="text-xs text-indigo-300/80 mb-6">Take a quick breath and resume whenever you're ready!</p>
+            <h3 className="text-xl font-black text-slate-900 mb-1">Game Paused</h3>
+            <p className="text-xs text-slate-600 mb-6">Take a quick breath and resume whenever you're ready!</p>
 
             <div className="w-full max-w-xs space-y-2.5">
               <button
                 type="button"
                 onClick={() => setIsPaused(false)}
-                className="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm uppercase tracking-wider shadow-md transition-colors cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm uppercase tracking-wider shadow-md transition-colors cursor-pointer flex items-center justify-center gap-2 border-2 border-amber-600"
               >
                 <Play className="w-4 h-4 fill-slate-950 text-slate-950" />
                 <span>Resume Game</span>
@@ -635,7 +663,7 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
               <button
                 type="button"
                 onClick={handleRestart}
-                className="w-full py-2.5 rounded-xl bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 font-bold text-xs border border-indigo-700/60 transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-white hover:bg-amber-100 text-slate-800 font-bold text-xs border border-amber-300 transition-colors cursor-pointer shadow-xs"
               >
                 Restart Level
               </button>

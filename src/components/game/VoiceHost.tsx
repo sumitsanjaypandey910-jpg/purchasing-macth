@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Volume2, VolumeX, Sparkles, RefreshCw, MessageSquare, Bot, ChevronDown } from 'lucide-react';
+import { Volume2, VolumeX, Sparkles, RefreshCw, MessageSquare, Bot, ChevronDown, Mic, Globe } from 'lucide-react';
 import { soundManager } from '../../utils/audio';
 
 export type HostPersonaId = 'sparky' | 'penny' | 'maya' | 'leo';
@@ -13,49 +13,50 @@ export interface HostPersona {
   voicePitch: number;
   voiceRate: number;
   tagline: string;
+  langAccent?: string;
 }
 
 export const HOST_PERSONAS: Record<HostPersonaId, HostPersona> = {
   sparky: {
     id: 'sparky',
     name: 'Sparky',
-    title: 'Robo Cashier',
+    title: 'Robo Cashier 🤖',
     avatarEmoji: '🤖',
-    voicePitch: 1.25,
+    voicePitch: 1.2,
     voiceRate: 0.95,
     tagline: 'Beep boop! Let\'s compute your shopping math!',
   },
   maya: {
     id: 'maya',
-    name: 'Maya',
-    title: 'Store Manager',
+    name: 'Maya Didi',
+    title: 'Store Manager 👩‍💼',
     avatarEmoji: '👩‍💼',
-    voicePitch: 1.1,
-    voiceRate: 0.98,
-    tagline: 'Welcome to the store! Let\'s find the best deals!',
+    voicePitch: 1.05,
+    voiceRate: 0.95,
+    tagline: 'Welcome to our store! Let\'s find the best deals!',
   },
   penny: {
     id: 'penny',
-    name: 'Penny',
-    title: 'Smart Owl',
+    name: 'Penny Owl',
+    title: 'Smart Coin Expert 🦉',
     avatarEmoji: '🦉',
-    voicePitch: 1.0,
+    voicePitch: 0.98,
     voiceRate: 0.9,
-    tagline: 'Hoo-hoo! Think carefully and count your coins!',
+    tagline: 'Hoo-hoo! Count every coin and save big!',
   },
   leo: {
     id: 'leo',
-    name: 'Leo',
-    title: 'Budget Champion',
+    name: 'Leo Champion',
+    title: 'Budget Master 🦁',
     avatarEmoji: '🦁',
     voicePitch: 0.9,
     voiceRate: 0.95,
-    tagline: 'Roar! You have what it takes to master money!',
+    tagline: 'Roar! You are a super money master!',
   },
 };
 
 /**
- * Natural Speech Formatter: Converts currency symbols and math operators to spoken English
+ * Natural Speech Formatter: Converts currency symbols and math operators to spoken language
  */
 export function cleanTextForSpeech(text: string): string {
   return text
@@ -67,6 +68,10 @@ export function cleanTextForSpeech(text: string): string {
     .replace(/\+/g, ' plus ')
     .replace(/-(?=\s*[0-9])/g, ' minus ')
     .replace(/=/g, ' equals ')
+    .replace(/🍎/g, 'apple ')
+    .replace(/🍌/g, 'banana ')
+    .replace(/🍪/g, 'cookie ')
+    .replace(/🥛/g, 'milk ')
     .replace(/📦|💵|🛒|📅|🏷️|👛|💡|🎉|✨|⚡|🛍️/g, '')
     .trim();
 }
@@ -94,7 +99,7 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
   const host = HOST_PERSONAS[selectedPersona] || HOST_PERSONAS.sparky;
 
   return (
-    <div className="w-full bg-[#101438] rounded-2xl p-3 border border-indigo-700/60 shadow-md flex items-start gap-3 relative mb-3">
+    <div className="w-full bg-gradient-to-r from-amber-100/90 via-orange-50/90 to-white rounded-3xl p-3.5 border-2 border-amber-300/80 shadow-md flex items-start gap-3.5 relative mb-4">
       {/* Host Avatar (Clickable to speak / change) */}
       <div className="relative shrink-0 flex flex-col items-center">
         <motion.button
@@ -104,24 +109,24 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
             soundManager.playClick();
             onTriggerSpeech(currentMessage);
           }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          animate={isSpeaking ? { scale: [1, 1.08, 1], rotate: [0, -3, 3, 0] } : {}}
-          transition={isSpeaking ? { repeat: Infinity, duration: 0.7 } : {}}
-          className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl cursor-pointer transition-all border shadow-md relative ${
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
+          animate={isSpeaking ? { scale: [1, 1.1, 1], rotate: [0, -3, 3, 0] } : {}}
+          transition={isSpeaking ? { repeat: Infinity, duration: 0.6 } : {}}
+          className={`w-13 h-13 rounded-2xl flex items-center justify-center text-3xl cursor-pointer transition-all border-2 shadow-md relative ${
             isSpeaking
-              ? 'bg-gradient-to-tr from-amber-400 to-orange-500 border-amber-300 ring-4 ring-amber-400/40 shadow-[0_0_15px_rgba(251,191,36,0.6)]'
-              : 'bg-indigo-900/90 border-indigo-600 hover:border-amber-400'
+              ? 'bg-gradient-to-tr from-amber-400 to-orange-500 border-amber-400 ring-4 ring-amber-300/70 shadow-[0_0_18px_rgba(251,191,36,0.7)]'
+              : 'bg-white border-amber-300 hover:border-amber-500 hover:bg-amber-50'
           }`}
           title="Click to hear Host speak"
         >
-          <span>{host.avatarEmoji}</span>
+          <span className="select-none">{host.avatarEmoji}</span>
 
           {/* Speaking Soundwaves Indicator */}
           {isSpeaking && (
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500 border border-white"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border-2 border-white"></span>
             </span>
           )}
         </motion.button>
@@ -134,20 +139,20 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
               soundManager.playClick();
               setShowPersonaMenu(!showPersonaMenu);
             }}
-            className="mt-1 text-[10px] text-indigo-300 hover:text-amber-300 font-bold underline transition-colors cursor-pointer flex items-center gap-0.5"
+            className="mt-1 text-[11px] text-amber-900 hover:text-amber-700 font-bold underline transition-colors cursor-pointer flex items-center gap-0.5"
           >
             <span>Change</span>
-            <ChevronDown className="w-2.5 h-2.5" />
+            <ChevronDown className="w-3 h-3" />
           </button>
         )}
       </div>
 
       {/* Host Speech Bubble Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-1 mb-1">
-          <div className="flex items-center gap-1.5">
-            <span className="font-black text-xs text-amber-300 tracking-wide">{host.name}</span>
-            <span className="text-[10px] text-indigo-300/80 bg-indigo-950 px-1.5 py-0.2 rounded-md border border-indigo-800 font-medium">
+        <div className="flex items-center justify-between gap-1 mb-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-black text-xs sm:text-sm text-amber-950 tracking-wide">{host.name}</span>
+            <span className="text-[10px] text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded-full border border-amber-300 font-bold">
               {host.title}
             </span>
           </div>
@@ -162,15 +167,15 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
                   soundManager.playClick();
                   onToggleAutoSpeak(!autoSpeak);
                 }}
-                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs ${
                   autoSpeak
-                    ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
-                    : 'bg-indigo-950 text-indigo-400 border border-indigo-800 hover:text-white'
+                    ? 'bg-amber-500 text-white border border-amber-600'
+                    : 'bg-white text-slate-600 border border-slate-300 hover:border-amber-300'
                 }`}
                 title={autoSpeak ? 'Auto Voice Host is ON (Reads questions automatically)' : 'Auto Voice Host is OFF'}
               >
-                {autoSpeak ? <Volume2 className="w-3 h-3 text-amber-400" /> : <VolumeX className="w-3 h-3 text-indigo-400" />}
-                <span>{autoSpeak ? 'Auto-Voice ON' : 'Auto-Voice OFF'}</span>
+                {autoSpeak ? <Volume2 className="w-3.5 h-3.5 text-white" /> : <VolumeX className="w-3.5 h-3.5 text-slate-500" />}
+                <span>{autoSpeak ? 'Awaaz ON' : 'Awaaz OFF'}</span>
               </button>
             )}
 
@@ -182,20 +187,21 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
                 soundManager.playClick();
                 onTriggerSpeech(currentMessage);
               }}
-              className={`p-1 rounded-lg text-xs transition-colors cursor-pointer ${
+              className={`px-2 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-xs ${
                 isSpeaking
-                  ? 'bg-amber-400 text-slate-950 animate-pulse'
-                  : 'bg-indigo-900/80 text-amber-300 hover:bg-indigo-800 border border-indigo-700'
+                  ? 'bg-amber-400 text-slate-950 ring-2 ring-amber-300 animate-pulse'
+                  : 'bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 hover:border-amber-400'
               }`}
               title="Read aloud"
             >
-              <Volume2 className="w-3.5 h-3.5" />
+              <Volume2 className="w-3.5 h-3.5 text-amber-600" />
+              <span className="hidden sm:inline">Suno</span>
             </button>
           </div>
         </div>
 
         {/* Message Bubble Text */}
-        <p className="text-xs text-slate-200 font-medium leading-relaxed bg-[#0b0e2b] p-2.5 rounded-xl border border-indigo-900/90 shadow-inner">
+        <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed bg-white/95 p-3 rounded-2xl border border-amber-200/90 shadow-inner">
           {currentMessage}
         </p>
       </div>
@@ -207,19 +213,19 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
             initial={{ opacity: 0, y: -6, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.95 }}
-            className="absolute top-16 left-3 z-30 bg-[#080b26] border border-indigo-700 rounded-2xl p-2.5 shadow-2xl w-60 text-white"
+            className="absolute top-18 left-3 z-30 bg-white border-2 border-amber-300 rounded-3xl p-3 shadow-xl w-64 text-slate-900"
           >
-            <div className="text-[11px] font-bold text-indigo-300 mb-2 px-1 flex items-center justify-between">
+            <div className="text-xs font-bold text-amber-950 mb-2 px-1 flex items-center justify-between border-b border-amber-100 pb-1.5">
               <span>Choose Voice Host:</span>
               <button
                 type="button"
                 onClick={() => setShowPersonaMenu(false)}
-                className="text-xs text-indigo-400 hover:text-white"
+                className="text-xs text-slate-400 hover:text-slate-700 font-bold p-1"
               >
                 ✕
               </button>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {Object.values(HOST_PERSONAS).map((p) => (
                 <button
                   key={p.id}
@@ -228,18 +234,18 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
                     soundManager.playClick();
                     onSelectPersona(p.id);
                     setShowPersonaMenu(false);
-                    onTriggerSpeech(`Hi! I am ${p.name}, your voice host! ${p.tagline}`);
+                    onTriggerSpeech(`Namaste! I am ${p.name}, your voice host! ${p.tagline}`);
                   }}
-                  className={`w-full p-2 rounded-xl flex items-center gap-2.5 text-left text-xs transition-colors cursor-pointer ${
+                  className={`w-full p-2 rounded-2xl flex items-center gap-2.5 text-left text-xs transition-colors cursor-pointer border ${
                     selectedPersona === p.id
-                      ? 'bg-amber-400 text-slate-950 font-bold'
-                      : 'hover:bg-indigo-900/60 text-slate-200'
+                      ? 'bg-amber-100 border-amber-400 text-amber-950 font-bold shadow-xs'
+                      : 'hover:bg-amber-50/70 border-transparent text-slate-700'
                   }`}
                 >
-                  <span className="text-xl">{p.avatarEmoji}</span>
+                  <span className="text-2xl">{p.avatarEmoji}</span>
                   <div className="min-w-0 flex-1">
-                    <div className="font-bold leading-tight">{p.name}</div>
-                    <div className={`text-[10px] ${selectedPersona === p.id ? 'text-slate-900 font-medium' : 'text-indigo-400'}`}>
+                    <div className="font-bold leading-tight text-slate-900">{p.name}</div>
+                    <div className="text-[10px] text-amber-800 font-medium">
                       {p.title}
                     </div>
                   </div>

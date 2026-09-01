@@ -226,7 +226,7 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
       <div className="w-full max-w-lg mb-4 flex items-center justify-between gap-2 px-2">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {[
-            { id: 'frequency-annual-match', label: 'Smart Challenge', icon: '🛍️' },
+            { id: 'frequency-annual-match', label: 'Smart Store Match', icon: '🛍️' },
             { id: 'item-price-match', label: 'Pay Item', icon: '🏷️' },
             { id: 'basket-sum-match', label: 'Cart Total', icon: '🛒' },
             { id: 'cashier-change-match', label: 'Cashier Change', icon: '💵' },
@@ -243,8 +243,8 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
               }}
               className={`px-3 py-1.5 rounded-xl font-bold text-xs whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
                 activeGameMode === m.id
-                  ? 'bg-amber-400 text-slate-950 shadow-md font-black scale-105'
-                  : 'bg-indigo-950/80 text-indigo-300 hover:text-white border border-indigo-800/80'
+                  ? 'bg-amber-500 text-slate-950 shadow-md font-black scale-105 border border-amber-600'
+                  : 'bg-white text-slate-700 hover:bg-amber-50 border border-amber-200'
               }`}
             >
               <span>{m.icon}</span>
@@ -262,10 +262,10 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
             const next = codes[(codes.indexOf(activeCurrency) + 1) % codes.length];
             setActiveCurrency(next);
           }}
-          className="px-2.5 py-1 rounded-xl bg-indigo-950 border border-indigo-700/60 text-amber-300 text-xs font-mono font-bold flex items-center gap-1 hover:bg-indigo-900 transition-colors cursor-pointer shrink-0"
+          className="px-2.5 py-1 rounded-xl bg-white border border-amber-300 text-amber-950 text-xs font-mono font-bold flex items-center gap-1 hover:bg-amber-50 transition-colors cursor-pointer shrink-0 shadow-xs"
           title="Click to Switch Currency"
         >
-          <Coins className="w-3.5 h-3.5 text-amber-400" />
+          <Coins className="w-3.5 h-3.5 text-amber-600" />
           <span>{activeCurrency} ({CURRENCY_CONFIGS[activeCurrency].symbol})</span>
         </button>
       </div>

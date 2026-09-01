@@ -26,15 +26,15 @@ export const GameCard: React.FC<GameCardProps> = ({
   size = 'md',
 }) => {
   const sizeClasses = {
-    sm: 'p-3 w-32 min-h-36',
-    md: 'p-4 w-44 min-h-52',
-    lg: 'p-5 w-56 min-h-64',
+    sm: 'p-3 w-36 min-h-40',
+    md: 'p-4 w-48 min-h-56',
+    lg: 'p-5 w-60 min-h-68',
   }[size];
 
   const emojiSizes = {
-    sm: 'text-4xl',
-    md: 'text-6xl',
-    lg: 'text-7xl',
+    sm: 'text-5xl',
+    md: 'text-7xl',
+    lg: 'text-8xl',
   }[size];
 
   return (

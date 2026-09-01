@@ -48,7 +48,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#06071d] text-slate-100 flex flex-col font-sans selection:bg-amber-400 selection:text-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-[#fffbeb] via-[#fef3c7]/30 to-[#ffedd5]/50 text-slate-900 flex flex-col font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* Global Header */}
       <Header
         totalPoints={totalScore}
@@ -65,16 +65,16 @@ export default function App() {
             initial={{ opacity: 0, y: -20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-18 right-6 z-50 bg-[#161a45] text-amber-300 px-4 py-2.5 rounded-2xl shadow-lg border border-amber-400/80 font-bold text-sm flex items-center gap-2"
+            className="fixed top-18 right-6 z-50 bg-white text-amber-950 px-4 py-2.5 rounded-2xl shadow-xl border-2 border-amber-400 font-black text-sm flex items-center gap-2"
           >
-            <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+            <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
             <span>{toastMessage}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Main Content Area - Direct Standalone Purchasing Match Screen */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 md:py-8 flex flex-col items-center justify-center">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-5 md:py-7 flex flex-col items-center justify-center">
         <PurchasingMatchGame
           childId="child_alex"
           childName={childName}
@@ -92,7 +92,7 @@ export default function App() {
       </main>
 
       {/* Clean Footer */}
-      <footer className="w-full bg-[#090b24] border-t border-indigo-950/80 py-3 text-center text-xs text-indigo-300/60 font-medium">
+      <footer className="w-full bg-amber-100/60 border-t border-amber-200 py-3 text-center text-xs text-amber-950/70 font-semibold">
         Purchasing Match • Kids Real-World Money & Smart Shopping Math
       </footer>
     </div>
