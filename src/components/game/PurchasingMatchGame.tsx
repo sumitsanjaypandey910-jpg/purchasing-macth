@@ -33,6 +33,8 @@ import {
   Coins,
   Layers,
   ChevronRight,
+  ArrowLeft,
+  LayoutGrid,
 } from 'lucide-react';
 
 export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
@@ -51,6 +53,7 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
   onSkillProgress,
   onEventLog,
   broadcastPostMessage = true,
+  onBackToMenu,
 }) => {
   const [activeGameMode, setActiveGameMode] = useState<GameMode>(gameMode);
   const [activeDifficulty, setActiveDifficulty] = useState<DifficultyLevel>(difficulty);
@@ -166,6 +169,57 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
     onEventLog?.(event);
   };
 
+  const handleClassicSuccess = (mode: GameMode, skill: MathSkill, attemptsCount: number = 1) => {
+    soundManager.playCorrect();
+    soundManager.playCoin();
+
+    const basePoints = 100;
+    const streakBonus = streak * 25;
+    const firstTryBonus = attemptsCount === 1 ? 50 : 15;
+    const earnedPoints = basePoints + streakBonus + firstTryBonus;
+
+    const nextStreak = streak + 1;
+    const nextTotalScore = totalScore + earnedPoints;
+
+    setTotalScore(nextTotalScore);
+    setStreak(nextStreak);
+    if (nextStreak > highestStreak) setHighestStreak(nextStreak);
+    setPointsLastRound(earnedPoints);
+    setSuccessfulMatches((prev) => prev + 1);
+    setTotalAttempts((prev) => prev + 1);
+
+    const scoreEvt: GameScoreEvent = {
+      id: `evt_classic_${Date.now()}`,
+      eventType: 'ITEM_MATCHED',
+      childId,
+      childName,
+      timestamp: Date.now(),
+      pointsEarned: earnedPoints,
+      totalScore: nextTotalScore,
+      currentStreak: nextStreak,
+      highestStreak: Math.max(highestStreak, nextStreak),
+      accuracy: Math.round(((successfulMatches + 1) / (totalAttempts + 1)) * 100),
+      mathSkill: skill,
+      gameMode: mode,
+      difficulty: activeDifficulty,
+      details: {
+        itemName: currentStoreItem?.name,
+        itemPrice: currentStoreItem?.price,
+      },
+    };
+
+    onScoreUpdate?.(scoreEvt);
+    onEventLog?.(scoreEvt);
+
+    setIsCelebrationOpen(true);
+  };
+
+  const handleClassicError = () => {
+    soundManager.playError();
+    setStreak(0);
+    setTotalAttempts((prev) => prev + 1);
+  };
+
   const handleRestart = () => {
     soundManager.playClick();
     soundManager.playLevelTransition();
@@ -223,13 +277,31 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Top Mode Switcher Bar */}
-      <div className="w-full max-w-lg mb-4 flex items-center justify-between gap-2 px-2">
+      <div className="w-full max-w-5xl mb-4 flex flex-wrap items-center justify-between gap-2.5 px-2">
+        {/* Back to 3 Blocks / Mode Selection Screen button */}
+        {onBackToMenu && (
+          <button
+            type="button"
+            id="btn-back-to-mode-selection"
+            onClick={() => {
+              soundManager.playClick();
+              onBackToMenu();
+            }}
+            className="px-3.5 py-2 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm border border-amber-600 transition-all cursor-pointer hover:scale-105 active:scale-95"
+            title="Return to the 3 Game Modes Selection Interface"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>All 3 Games Interface</span>
+          </button>
+        )}
+
+        {/* Quick Mode Switcher Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {[
-            { id: 'frequency-annual-match', label: 'Smart Store Match', icon: '🛍️' },
-            { id: 'item-price-match', label: 'Pay Item', icon: '🏷️' },
+            { id: 'frequency-annual-match', label: '1. Smart Store (Voice)', icon: '🛍️' },
+            { id: 'item-price-match', label: '2. Pay Item (Cash)', icon: '🏷️' },
+            { id: 'cashier-change-match', label: '3. Cashier Change', icon: '💵' },
             { id: 'basket-sum-match', label: 'Cart Total', icon: '🛒' },
-            { id: 'cashier-change-match', label: 'Cashier Change', icon: '💵' },
             { id: 'budget-shopper', label: 'Budget Cart', icon: '👛' },
           ].map((m) => (
             <button
@@ -243,7 +315,7 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
               }}
               className={`px-3 py-1.5 rounded-xl font-bold text-xs whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
                 activeGameMode === m.id
-                  ? 'bg-amber-500 text-slate-950 shadow-md font-black scale-105 border border-amber-600'
+                  ? 'bg-amber-500 text-slate-950 shadow-md font-black scale-105 border-2 border-amber-600'
                   : 'bg-white text-slate-700 hover:bg-amber-50 border border-amber-200'
               }`}
             >
@@ -262,7 +334,7 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
             const next = codes[(codes.indexOf(activeCurrency) + 1) % codes.length];
             setActiveCurrency(next);
           }}
-          className="px-2.5 py-1 rounded-xl bg-white border border-amber-300 text-amber-950 text-xs font-mono font-bold flex items-center gap-1 hover:bg-amber-50 transition-colors cursor-pointer shrink-0 shadow-xs"
+          className="px-3 py-1.5 rounded-xl bg-white border border-amber-300 text-amber-950 text-xs font-mono font-bold flex items-center gap-1.5 hover:bg-amber-50 transition-colors cursor-pointer shrink-0 shadow-xs"
           title="Click to Switch Currency"
         >
           <Coins className="w-3.5 h-3.5 text-amber-600" />
@@ -287,11 +359,31 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
           broadcastPostMessage={broadcastPostMessage}
         />
       ) : (
-        /* Classic Cash / Wallet Game Modes */
-        <div className="w-full max-w-md md:max-w-lg mx-auto bg-white rounded-[32px] p-5 shadow-xl border border-amber-200">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
-            <span className="text-xs font-bold text-slate-600">Round {currentRound} of {maxRounds}</span>
-            <span className="text-sm font-bold text-indigo-600">{totalScore} Points</span>
+        /* Classic Cash / Wallet Game Modes with Spacious Layout */
+        <div className="w-full max-w-5xl mx-auto bg-white/95 rounded-[32px] p-4 sm:p-6 shadow-xl border-2 border-amber-200/90">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-amber-100">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-amber-100 border border-amber-300 rounded-xl text-xs font-mono font-black text-amber-950">
+                Round {currentRound} of {maxRounds}
+              </span>
+              <span className="text-xs font-bold text-slate-600 hidden sm:inline">
+                {activeGameMode === 'item-price-match' && '🏷️ Mode 2: Pay Item with Cash Counter'}
+                {activeGameMode === 'cashier-change-match' && '💵 Mode 3: Cashier Change Return'}
+                {activeGameMode === 'basket-sum-match' && '🛒 Cart Total Match'}
+                {activeGameMode === 'budget-shopper' && '👛 Budget Shopper Match'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-mono font-black text-amber-800 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
+                {totalScore} Points
+              </span>
+              {streak > 0 && (
+                <span className="text-xs font-mono font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-xl border border-orange-200 flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+                  {streak} Streak
+                </span>
+              )}
+            </div>
           </div>
 
           {activeGameMode === 'item-price-match' && (
@@ -299,8 +391,8 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
               key={`round-item-${roundItemIndex}-${activeCurrency}`}
               item={currentStoreItem}
               currency={activeCurrency}
-              onSuccessMatch={() => handleNextRound()}
-              onErrorAttempt={() => {}}
+              onSuccessMatch={(paid, atts) => handleClassicSuccess('item-price-match', 'coin_recognition', atts)}
+              onErrorAttempt={handleClassicError}
               streak={streak}
             />
           )}
@@ -310,8 +402,8 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
               key={`round-basket-${roundItemIndex}-${activeCurrency}`}
               items={basketItems}
               currency={activeCurrency}
-              onSuccessMatch={() => handleNextRound()}
-              onErrorAttempt={() => {}}
+              onSuccessMatch={(paid, atts) => handleClassicSuccess('basket-sum-match', 'addition', atts)}
+              onErrorAttempt={handleClassicError}
               streak={streak}
             />
           )}
@@ -322,8 +414,8 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
               item={currentStoreItem}
               customerPaid={customerPaidAmount}
               currency={activeCurrency}
-              onSuccessMatch={() => handleNextRound()}
-              onErrorAttempt={() => {}}
+              onSuccessMatch={(paid, atts) => handleClassicSuccess('cashier-change-match', 'subtraction_change', atts)}
+              onErrorAttempt={handleClassicError}
               streak={streak}
             />
           )}
@@ -334,8 +426,8 @@ export const PurchasingMatchGame: React.FC<PurchasingMatchGameProps> = ({
               shelfItems={budgetShelfItems}
               targetBudget={budgetTarget}
               currency={activeCurrency}
-              onSuccessMatch={() => handleNextRound()}
-              onErrorAttempt={() => {}}
+              onSuccessMatch={(paid, atts) => handleClassicSuccess('budget-shopper', 'budgeting', atts)}
+              onErrorAttempt={handleClassicError}
               streak={streak}
             />
           )}

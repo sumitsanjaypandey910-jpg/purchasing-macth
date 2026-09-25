@@ -10,6 +10,8 @@ interface HeaderProps {
   currency: CurrencyCode;
   onChangeCurrency: (c: CurrencyCode) => void;
   childName: string;
+  currentView?: 'mode-select' | 'in-game';
+  onGoToModeSelect?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,6 +20,8 @@ export const Header: React.FC<HeaderProps> = ({
   currency,
   onChangeCurrency,
   childName,
+  currentView = 'mode-select',
+  onGoToModeSelect,
 }) => {
   const handleCurrencyChange = (c: CurrencyCode) => {
     soundManager.playCoin();
@@ -28,13 +32,22 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="w-full bg-white/95 backdrop-blur-md border-b-2 border-amber-200/90 sticky top-0 z-40 shadow-xs text-slate-900">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3">
         {/* Brand Logo & Title */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-400 to-amber-500 flex items-center justify-center text-xl shadow-md text-white border-2 border-amber-300">
+        <div
+          onClick={() => {
+            if (onGoToModeSelect) {
+              soundManager.playClick();
+              onGoToModeSelect();
+            }
+          }}
+          className={`flex items-center gap-3 ${onGoToModeSelect ? 'cursor-pointer select-none group' : ''}`}
+          title="Return to Game Selection Screen"
+        >
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-400 to-amber-500 flex items-center justify-center text-xl shadow-md text-white border-2 border-amber-300 group-hover:scale-105 transition-transform">
             🛍️
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-black text-lg text-slate-900 tracking-wide leading-tight">
+              <h1 className="font-black text-lg text-slate-900 tracking-wide leading-tight group-hover:text-amber-600 transition-colors">
                 Purchasing Match
               </h1>
               <span className="bg-amber-100 text-amber-950 font-black text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border border-amber-300 font-mono">
@@ -47,8 +60,24 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right Player Tally & Currency Picker */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Right Player Tally & Navigation */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Switch Mode Button when currently playing a game */}
+          {currentView === 'in-game' && onGoToModeSelect && (
+            <button
+              type="button"
+              id="header-btn-switch-mode"
+              onClick={() => {
+                soundManager.playClick();
+                onGoToModeSelect();
+              }}
+              className="px-2.5 sm:px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl border border-amber-600 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer hover:scale-105 active:scale-95"
+            >
+              <span>🎮</span>
+              <span className="hidden xs:inline">All Games</span>
+            </button>
+          )}
+
           {/* Streak pill if > 0 */}
           {streak > 0 && (
             <div className="flex items-center gap-1 px-2.5 py-1 bg-orange-100 border border-orange-300 rounded-xl text-orange-950 text-xs font-mono font-bold">

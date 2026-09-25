@@ -49,6 +49,7 @@ interface SmartPurchasingMatchProps {
   onGameComplete?: (summary: GameSessionSummary) => void;
   onEventLog?: (event: GameScoreEvent) => void;
   broadcastPostMessage?: boolean;
+  autoStart?: boolean;
 }
 
 export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
@@ -63,8 +64,9 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
   onGameComplete,
   onEventLog,
   broadcastPostMessage = true,
+  autoStart = true,
 }) => {
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(autoStart);
   const [roundIndex, setRoundIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);

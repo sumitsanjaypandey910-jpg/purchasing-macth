@@ -195,4 +195,5 @@ export interface PurchasingMatchGameProps {
   onSkillProgress?: (skill: MathSkill, accuracy: number) => void;
   onEventLog?: (event: GameScoreEvent) => void;
   broadcastPostMessage?: boolean;
+  onBackToMenu?: () => void;
 }
