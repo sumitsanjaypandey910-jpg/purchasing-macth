@@ -77,10 +77,10 @@ export const BasketMatch: React.FC<BasketMatchProps> = ({
           <button
             type="button"
             onClick={() => setShowHint(h => !h)}
-            className="flex items-center gap-1 text-xs font-kid font-bold text-sky-800 hover:text-sky-950 bg-sky-200/70 hover:bg-sky-300/80 px-2.5 py-1 rounded-full transition-colors"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-kid font-black text-sky-900 hover:text-sky-950 bg-sky-200 hover:bg-sky-300 px-3.5 py-1.5 rounded-full transition-colors border border-sky-400 cursor-pointer shadow-xs"
           >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showHint ? 'Hide Hint' : 'Hint'}</span>
+            <HelpCircle className="w-4 h-4 text-sky-800" />
+            <span>{showHint ? 'Hide Hint' : '💡 Need Hint?'}</span>
           </button>
         </div>
 
@@ -105,21 +105,25 @@ export const BasketMatch: React.FC<BasketMatchProps> = ({
           ))}
         </div>
 
-        {/* Addition equation helper */}
-        <div className="p-3.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white rounded-2xl shadow-sm text-center font-kid">
-          <div className="flex items-center justify-center gap-2 flex-wrap text-sm md:text-base font-bold">
+        {/* Addition equation helper & Question */}
+        <div className="p-4 bg-gradient-to-r from-sky-500 to-indigo-600 text-white rounded-2xl shadow-sm text-center font-kid">
+          <div className="text-xs sm:text-sm font-black uppercase tracking-wider text-sky-100 mb-1.5 flex items-center justify-center gap-1.5">
+            <span>❓</span>
+            <span>Question: Pay Exact Basket Total</span>
+          </div>
+          <div className="flex items-center justify-center gap-2 flex-wrap text-base md:text-lg font-black">
             {items.map((item, i) => (
               <React.Fragment key={`math-${item.id}-${i}`}>
-                {i > 0 && <Plus className="w-3.5 h-3.5 opacity-80" />}
+                {i > 0 && <Plus className="w-4 h-4 opacity-90 stroke-[3]" />}
                 <span>{formatMoney(item.price, currency)}</span>
               </React.Fragment>
             ))}
-            <span>=</span>
-            <span className="text-lg md:text-xl font-bold bg-white text-indigo-900 px-2.5 py-0.5 rounded-lg shadow-inner">
+            <span className="text-xl font-black">=</span>
+            <span className="text-xl md:text-2xl font-black bg-white text-indigo-900 px-3 py-1 rounded-xl shadow-inner">
               {formatMoney(totalBasketPrice, currency)}
             </span>
           </div>
-          <p className="text-xs text-sky-100 mt-1 font-medium">Add up the items and pay the exact basket total!</p>
+          <p className="text-xs sm:text-sm text-sky-100 mt-2 font-bold">Add up the items and pay the exact basket total!</p>
         </div>
 
         <AnimatePresence>
@@ -128,9 +132,15 @@ export const BasketMatch: React.FC<BasketMatchProps> = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-3 text-xs font-kid text-sky-900 bg-sky-100/90 p-2.5 rounded-xl border border-sky-300 text-left"
+              className="mt-3.5 text-sm sm:text-base md:text-lg font-kid text-sky-950 bg-sky-100/95 p-3.5 sm:p-4 rounded-2xl border-2 border-sky-400 text-left shadow-sm leading-relaxed"
             >
-              💡 <strong>Hint:</strong> Total is {formatMoney(totalBasketPrice, currency)}. Try placing a bill first, then adding coins for any remaining cents!
+              <div className="flex items-center gap-1.5 font-black text-sky-900 text-xs sm:text-sm uppercase tracking-wider mb-1">
+                <span className="text-lg">💡</span>
+                <span>Basket Total Hint:</span>
+              </div>
+              <p className="font-bold">
+                Total is <strong className="text-indigo-900 font-black text-base sm:text-lg underline">{formatMoney(totalBasketPrice, currency)}</strong>. Try placing a bill first, then adding coins for any remaining cents!
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

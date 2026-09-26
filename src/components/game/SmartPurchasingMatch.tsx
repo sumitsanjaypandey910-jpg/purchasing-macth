@@ -521,23 +521,30 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
           </motion.div>
 
           {/* Item Name & Base Price */}
-          <h2 className="text-lg sm:text-xl font-black text-slate-900 text-center leading-tight mb-1">
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 text-center leading-tight mb-1">
             {currentChallenge.itemName}
           </h2>
-          <div className="text-xs text-amber-950 font-mono font-black bg-amber-200/80 px-3 py-1 rounded-full border border-amber-300 mb-3 shadow-xs">
+          <div className="text-xs sm:text-sm text-amber-950 font-mono font-black bg-amber-200/90 px-3.5 py-1 rounded-full border border-amber-300 mb-3 shadow-xs">
             1 Item = {formatMoney(currentChallenge.basePrice, currency)}
           </div>
 
-          {/* Clear Purchasing Question Text */}
-          <div className="w-full bg-white rounded-2xl p-3.5 border-2 border-amber-200/80 text-center shadow-xs">
-            <p className="text-sm sm:text-base font-bold text-slate-800 leading-relaxed">
+          {/* Prominent, Bold & Clear Purchasing Question Text */}
+          <div className="w-full bg-white rounded-2xl p-4 sm:p-5 border-2 border-amber-300 shadow-md text-center">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs uppercase tracking-wider mb-2">
+              <span className="text-sm">❓</span>
+              <span>Question / Sawal</span>
+            </div>
+            <p className="text-lg sm:text-2xl md:text-3xl font-black text-slate-900 leading-snug tracking-tight">
               {currentChallenge.questionText}
             </p>
           </div>
 
-          {/* Math Formula Hint Pill */}
-          <div className="mt-2.5 px-3.5 py-1 bg-amber-100/80 rounded-xl border border-amber-300 text-amber-950 text-xs font-mono font-bold shadow-xs">
-            💡 {currentChallenge.formulaHint}
+          {/* Large & Prominent Math Formula Hint */}
+          <div className="mt-3.5 px-5 py-2.5 bg-gradient-to-r from-amber-100 via-amber-200/90 to-amber-100 rounded-2xl border-2 border-amber-400 text-amber-950 shadow-sm flex items-center justify-center gap-2">
+            <span className="text-xl sm:text-2xl filter drop-shadow-xs">💡</span>
+            <span className="text-base sm:text-lg md:text-xl font-mono font-black tracking-wide">
+              Hint: {currentChallenge.formulaHint}
+            </span>
           </div>
         </motion.div>
 
@@ -548,7 +555,7 @@ export const SmartPurchasingMatch: React.FC<SmartPurchasingMatchProps> = ({
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              className={`w-full mb-3 p-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border-2 shadow-xs ${
+              className={`w-full mb-3 p-3.5 sm:p-4 rounded-2xl text-sm sm:text-base font-black flex items-center gap-2.5 border-2 shadow-xs ${
                 answerStatus === 'correct'
                   ? 'bg-emerald-50 text-emerald-950 border-emerald-400'
                   : 'bg-rose-50 text-rose-950 border-rose-400'

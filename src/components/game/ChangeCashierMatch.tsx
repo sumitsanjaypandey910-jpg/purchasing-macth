@@ -79,24 +79,30 @@ export const ChangeCashierMatch: React.FC<ChangeCashierMatchProps> = ({
           <button
             type="button"
             onClick={() => setShowHint(h => !h)}
-            className="flex items-center gap-1 text-xs font-kid font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-200/70 hover:bg-emerald-300/80 px-2.5 py-1 rounded-full transition-colors"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-kid font-black text-emerald-900 hover:text-emerald-950 bg-emerald-200 hover:bg-emerald-300 px-3.5 py-1.5 rounded-full transition-colors border border-emerald-400 cursor-pointer shadow-xs"
           >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showHint ? 'Hide Math' : 'Need Math Help?'}</span>
+            <HelpCircle className="w-4 h-4 text-emerald-800" />
+            <span>{showHint ? 'Hide Math' : '💡 Need Math Help?'}</span>
           </button>
         </div>
 
         {/* Customer Transaction Display */}
         <div className="space-y-3 my-2">
-          {/* Customer Dialogue */}
-          <div className="bg-white/90 p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-xl shrink-0">
+          {/* Customer Dialogue & Question */}
+          <div className="bg-white/95 p-4 rounded-2xl border-2 border-emerald-300 shadow-md flex items-start gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-2xl shrink-0 border border-emerald-300">
               🧒
             </div>
-            <div>
-              <p className="font-kid text-xs text-slate-500 font-semibold">Customer says:</p>
-              <p className="font-kid font-bold text-slate-800 text-sm">
-                "I want to buy the <span className="text-emerald-700">{item.name}</span>! Here is <span className="text-emerald-700">{formatMoney(customerPaid, currency)}</span>."
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-1 text-xs font-black uppercase text-emerald-900 tracking-wide mb-1">
+                <span>❓</span>
+                <span>Customer Order / Question:</span>
+              </div>
+              <p className="font-kid font-black text-slate-900 text-base sm:text-lg md:text-xl leading-snug">
+                "I want to buy the <span className="text-emerald-800 font-black">{item.name}</span>! Here is{' '}
+                <span className="text-emerald-800 font-black bg-emerald-100 px-2 py-0.5 rounded-lg border border-emerald-300">
+                  {formatMoney(customerPaid, currency)}
+                </span>."
               </p>
             </div>
           </div>
@@ -116,14 +122,17 @@ export const ChangeCashierMatch: React.FC<ChangeCashierMatchProps> = ({
           </div>
 
           {/* Math breakdown banner */}
-          <div className="p-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl shadow-sm text-center font-kid">
-            <div className="text-xs text-emerald-100 uppercase font-semibold mb-1">Calculate Change:</div>
-            <div className="flex items-center justify-center gap-2 text-sm md:text-base font-bold">
+          <div className="p-4 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl shadow-sm text-center font-kid">
+            <div className="text-xs sm:text-sm text-emerald-100 uppercase font-black tracking-wider mb-1 flex items-center justify-center gap-1.5">
+              <span>❓</span>
+              <span>Question: Calculate Change Due</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-base md:text-lg font-black">
               <span>Customer Paid ({formatMoney(customerPaid, currency)})</span>
               <span>−</span>
               <span>Price ({formatMoney(item.price, currency)})</span>
             </div>
-            <div className="mt-2 text-xl md:text-2xl font-bold bg-white text-emerald-950 px-3 py-1 rounded-xl inline-block shadow-inner">
+            <div className="mt-2 text-2xl md:text-3xl font-black bg-white text-emerald-950 px-4 py-1 rounded-xl inline-block shadow-inner">
               Change Due = {formatMoney(exactChangeDue, currency)}
             </div>
           </div>
@@ -135,9 +144,19 @@ export const ChangeCashierMatch: React.FC<ChangeCashierMatchProps> = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-3 text-xs font-kid text-emerald-900 bg-emerald-100/90 p-2.5 rounded-xl border border-emerald-300 text-left"
+              className="mt-3.5 text-sm sm:text-base md:text-lg font-kid text-emerald-950 bg-emerald-100/95 p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-400 text-left shadow-sm leading-relaxed"
             >
-              💡 <strong>Cashier Math:</strong> {formatMoney(customerPaid, currency)} minus {formatMoney(item.price, currency)} equals <strong>{formatMoney(exactChangeDue, currency)}</strong>. Pick the coins/bills on the right to give exactly this amount!
+              <div className="flex items-center gap-1.5 font-black text-emerald-900 text-xs sm:text-sm uppercase tracking-wider mb-1">
+                <span className="text-lg">💡</span>
+                <span>Cashier Math Hint:</span>
+              </div>
+              <p className="font-bold">
+                {formatMoney(customerPaid, currency)} minus {formatMoney(item.price, currency)} equals{' '}
+                <strong className="text-emerald-900 font-black text-base sm:text-lg underline">
+                  {formatMoney(exactChangeDue, currency)}
+                </strong>
+                . Pick the coins/bills on the right to give exactly this amount!
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

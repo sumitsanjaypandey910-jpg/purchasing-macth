@@ -78,10 +78,10 @@ export const ItemPriceMatch: React.FC<ItemPriceMatchProps> = ({
           <button
             type="button"
             onClick={() => setShowHint(h => !h)}
-            className="flex items-center gap-1 text-xs font-kid font-bold text-amber-800 hover:text-amber-950 bg-amber-200/70 hover:bg-amber-300/80 px-2.5 py-1 rounded-full transition-colors"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-kid font-black text-amber-900 hover:text-amber-950 bg-amber-200 hover:bg-amber-300 px-3.5 py-1.5 rounded-full transition-colors border border-amber-400 cursor-pointer shadow-xs"
           >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showHint ? 'Hide Hint' : 'Need Hint?'}</span>
+            <HelpCircle className="w-4 h-4 text-amber-800" />
+            <span>{showHint ? 'Hide Hint' : '💡 Need Hint?'}</span>
           </button>
         </div>
 
@@ -95,10 +95,18 @@ export const ItemPriceMatch: React.FC<ItemPriceMatchProps> = ({
           />
         </div>
 
-        {/* Prompt Instruction */}
-        <div className="w-full text-center mt-3 bg-white/80 backdrop-blur-sm rounded-2xl p-3.5 border border-amber-200 shadow-sm">
-          <p className="font-kid font-bold text-slate-800 text-sm md:text-base">
-            Can you pay the exact price of <span className="text-amber-600 text-lg font-bold">{formatMoney(item.price, currency)}</span> for the <span className="text-slate-900">{item.name}</span>?
+        {/* Prompt Instruction / Question */}
+        <div className="w-full text-center mt-3 bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-5 border-2 border-amber-300 shadow-md">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs uppercase tracking-wider mb-2">
+            <span className="text-sm">❓</span>
+            <span>Question / Challenge</span>
+          </div>
+          <p className="font-kid font-black text-slate-900 text-lg sm:text-xl md:text-2xl leading-relaxed">
+            Can you pay the exact price of{' '}
+            <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-xl border border-amber-300 text-xl sm:text-2xl font-black inline-block">
+              {formatMoney(item.price, currency)}
+            </span>{' '}
+            for the <span className="text-slate-950 underline decoration-amber-400 decoration-4 font-black">{item.name}</span>?
           </p>
 
           <AnimatePresence>
@@ -107,9 +115,15 @@ export const ItemPriceMatch: React.FC<ItemPriceMatchProps> = ({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-2 text-xs font-kid text-amber-900 bg-amber-100/90 p-2.5 rounded-xl border border-amber-300 text-left"
+                className="mt-3.5 text-sm sm:text-base md:text-lg font-kid text-amber-950 bg-amber-100/95 p-3.5 sm:p-4 rounded-2xl border-2 border-amber-400 text-left shadow-sm leading-relaxed"
               >
-                💡 <strong>Hint:</strong> Look at the dollar/coin amounts in the wallet on the right. Try combining the biggest bill or coin that is less than or equal to {formatMoney(item.price, currency)} first!
+                <div className="flex items-center gap-1.5 font-black text-amber-900 text-xs sm:text-sm uppercase tracking-wider mb-1">
+                  <span className="text-lg">💡</span>
+                  <span>Shopping Hint:</span>
+                </div>
+                <p className="font-bold">
+                  Look at the dollar/coin amounts in the wallet on the right. Try combining the biggest bill or coin that is less than or equal to <strong className="text-amber-900 font-black text-base sm:text-lg underline">{formatMoney(item.price, currency)}</strong> first!
+                </p>
               </motion.div>
             )}
           </AnimatePresence>

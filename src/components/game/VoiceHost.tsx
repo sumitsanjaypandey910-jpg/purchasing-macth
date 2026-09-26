@@ -201,7 +201,7 @@ export const VoiceHost: React.FC<VoiceHostProps> = ({
         </div>
 
         {/* Message Bubble Text */}
-        <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed bg-white/95 p-3 rounded-2xl border border-amber-200/90 shadow-inner">
+        <p className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug bg-white/95 p-3 sm:p-3.5 rounded-2xl border-2 border-amber-300 shadow-xs">
           {currentMessage}
         </p>
       </div>

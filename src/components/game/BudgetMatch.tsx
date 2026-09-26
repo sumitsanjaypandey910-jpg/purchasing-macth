@@ -77,10 +77,11 @@ export const BudgetMatch: React.FC<BudgetMatchProps> = ({
               👛
             </div>
             <div>
-              <span className="text-xs uppercase tracking-wider text-purple-200 font-bold font-kid block">
-                Target Budget Challenge
+              <span className="text-xs sm:text-sm uppercase tracking-wider text-purple-200 font-black font-kid flex items-center gap-1.5 mb-0.5">
+                <span>❓</span>
+                <span>Question / Challenge:</span>
               </span>
-              <h3 className="font-kid font-bold text-2xl md:text-3xl text-yellow-300">
+              <h3 className="font-kid font-black text-2xl md:text-3xl lg:text-4xl text-yellow-300 drop-shadow-sm">
                 Spend Exactly {formatMoney(targetBudget, currency)}
               </h3>
             </div>
@@ -163,10 +164,10 @@ export const BudgetMatch: React.FC<BudgetMatchProps> = ({
           <button
             type="button"
             onClick={() => setShowHint(h => !h)}
-            className="flex items-center gap-1 text-xs font-kid font-bold text-indigo-800 hover:text-indigo-950 bg-indigo-100 hover:bg-indigo-200 px-3 py-1.5 rounded-full transition-colors"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-kid font-black text-indigo-900 hover:text-indigo-950 bg-indigo-200 hover:bg-indigo-300 px-3.5 py-1.5 rounded-full transition-colors border border-indigo-400 cursor-pointer shadow-xs"
           >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showHint ? 'Hide Hint' : 'Shopping Hint'}</span>
+            <HelpCircle className="w-4 h-4 text-indigo-800" />
+            <span>{showHint ? 'Hide Hint' : '💡 Need Hint?'}</span>
           </button>
         </div>
 
@@ -176,9 +177,15 @@ export const BudgetMatch: React.FC<BudgetMatchProps> = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mb-4 text-xs md:text-sm font-kid text-indigo-900 bg-indigo-50/90 p-3 rounded-2xl border border-indigo-200 text-left"
+              className="mb-4 text-sm sm:text-base md:text-lg font-kid text-indigo-950 bg-indigo-100/95 p-3.5 sm:p-4 rounded-2xl border-2 border-indigo-400 text-left shadow-sm leading-relaxed"
             >
-              💡 <strong>Budget Strategy:</strong> You need exactly {formatMoney(targetBudget, currency)}. Look for 2 or 3 items whose prices add up to {formatMoney(targetBudget, currency)}!
+              <div className="flex items-center gap-1.5 font-black text-indigo-900 text-xs sm:text-sm uppercase tracking-wider mb-1">
+                <span className="text-lg">💡</span>
+                <span>Budget Strategy Hint:</span>
+              </div>
+              <p className="font-bold">
+                You need exactly <strong className="text-indigo-950 font-black text-base sm:text-lg underline">{formatMoney(targetBudget, currency)}</strong>. Look for 2 or 3 items whose prices add up to {formatMoney(targetBudget, currency)}!
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
